@@ -1,4 +1,0 @@
-import { redirect } from 'next/navigation'
-export default function Home() {
-  redirect('/lab/demo-lab-001')
-}
