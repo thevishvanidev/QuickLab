@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Lab {
+  id       String    @id @default(cuid())
+  name     String
+  phone    String
+  address  String
+  tests    Test[]
+  bookings Booking[]
+}
+
+model Test {
+  id           String        @id @default(cuid())
+  labId        String
+  name         String
+  description  String?
+  price        Float
+  category     String
+  lab          Lab           @relation(fields: [labId], references: [id])
+  bookingItems BookingItem[]
+}
+
+model Booking {
+  id             String        @id @default(cuid())
+  labId          String
+  patientName    String
+  phone          String
+  address        String
+  date           String
+  time           String
+  status         String        @default("Pending")
+  technicianName String?
+  reportLink     String?
+  paymentMode    String        @default("Cash")
+  totalAmount    Float
+  createdAt      DateTime      @default(now())
+  lab            Lab           @relation(fields: [labId], references: [id])
+  items          BookingItem[]
+}
+
+model BookingItem {
+  id        String  @id @default(cuid())
+  bookingId String
+  testId    String
+  booking   Booking @relation(fields: [bookingId], references: [id])
+  test      Test    @relation(fields: [testId], references: [id])
+}
